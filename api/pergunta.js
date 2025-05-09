@@ -20,18 +20,40 @@ router.get('/:id', async (req, res) => {
 
 router.get('/', async (req, res) => {
 
-    const perguntas = await pergunta.findAll();
-    res.json(perguntas)
+     try {
+        const perguntas = await pergunta.findAll();
+
+        if (!perguntas) {
+            return res.status(404).json({ error: 'perguntas não encontradas' });
+        }
+
+        res.json(perguntas);
+
+        console.log('Pergunta encontrada!');
+
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao buscar o perguntas' });
+    }
 
 });
 
 router.post('/cad', async (req, res) => {
 
-    const {enunciado, idQuiz, alternativa1, alternativa2, alternativa3, alternativa4, respCorreta} = req.body;
+    const {enunciado, quizzId, alternativa1, alternativa2, alternativa3, alternativa4, respCorreta} = req.body;
 
-    await pergunta.create({enunciado, idQuiz, alternativa1, alternativa2, alternativa3, alternativa4, respCorreta});
+    try {
+        await pergunta.create({enunciado, quizzId, alternativa1, alternativa2, alternativa3, alternativa4, respCorreta});
 
-    res.send('Pergunta cadastrada!')
+        res.json(pergunta);
+
+        console.log('Pergunta cadastrada!');
+
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao cadastrar o pergunta' });
+
+        console.log(error);
+    }
+
 
 });
 
@@ -51,6 +73,8 @@ router.put('/edit/:id', async (req, res) => {
 
         const perguntaAtualizada = await pergunta.findByPk(id);
         res.json(perguntaAtualizada);
+
+        console.log('Pergunta atualizada!');
 
     } catch (error) {
         res.status(500).json({ error: 'Erro ao atualizar a pergunta' });

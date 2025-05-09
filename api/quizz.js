@@ -9,19 +9,30 @@ router.get('/:id', async (req, res) => {
         const quizz = await quizz.findByPk(id);
 
         if (!quizz) {
-            return res.status(404).json({ error: 'Quiz não encontrado' });
+            return res.status(404).json({ error: 'Quizz não encontrado' });
         }
 
         res.json(quizz);
     } catch (error) {
-        res.status(500).json({ error: 'Erro ao buscar o quiz' });
+        res.status(500).json({ error: 'Erro ao buscar o quizz' });
     }
 });
 
 router.get('/', async (req, res) => {
 
-    const quizzes = await quizz.findAll();
-    res.json(quizzes)
+    try {
+
+        const quizzes = await quizz.findAll();
+
+        if (!quizzes) {
+            return res.status(404).json({ error: 'Quizzes não encontrados' });
+        }
+
+        res.json(quizzes);
+
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao buscar todos os quizzes' });
+    }
 
 });
 
@@ -29,9 +40,17 @@ router.post('/cad', async (req, res) => {
 
     const {titulo, descricao, categoria, idUsuario, ativo} = req.body;
 
-    await quizz.create({titulo, descricao, categoria, idUsuario, ativo});
+    try {
 
-    res.send('quizz cadastrado!')
+        await quizz.create({titulo, descricao, categoria, idUsuario, ativo});
+
+        res.json(quizz);
+
+        console.log('Quizz cadastrado!')
+
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao cadastrar quizz' });
+    }
 
 });
 
@@ -46,14 +65,14 @@ router.put('/edit/:id', async (req, res) => {
         );
 
         if (atualizados === 0) {
-            return res.status(404).json({ error: 'Quiz não encontrado ou dados iguais' });
+            return res.status(404).json({ error: 'Quizz não encontrado ou dados iguais' });
         }
 
         const quizAtualizado = await quizz.findByPk(id);
         res.json(quizAtualizado);
 
     } catch (error) {
-        res.status(500).json({ error: 'Erro ao atualizar o quiz' });
+        res.status(500).json({ error: 'Erro ao atualizar o quizz' });
     }
 });
 
@@ -66,12 +85,12 @@ router.delete('/del/:id', async (req, res) => {
         });
 
         if (deletados === 0) {
-            return res.status(404).json({ error: 'Quiz não encontrado' });
+            return res.status(404).json({ error: 'Quizz não encontrado' });
         }
 
-        res.json({ message: 'Quiz deletado com sucesso' });
+        res.json({ message: 'Quizz deletado com sucesso' });
     } catch (error) {
-        res.status(500).json({ error: 'Erro ao deletar o quiz' });
+        res.status(500).json({ error: 'Erro ao deletar o quizz' });
     }
 });
 

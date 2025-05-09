@@ -7,10 +7,13 @@ const pergunta = (sequelize, DataTypes) => {
             type: DataTypes.STRING
 
         },
-        idQuiz: {
-
-            type: DataTypes.STRING
-
+        quizzId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'quizz', // Nome da tabela
+                key: 'id'
+            }
         },
         alternativa1: {
 
@@ -50,5 +53,12 @@ const pergunta = (sequelize, DataTypes) => {
     return Pergunta
 
 }
+
+ pergunta.associate = (models) => {
+    pergunta.belongsTo(models.Quizz, {
+      foreignKey: 'quizzId',
+      as: 'quizz'
+    });
+  };
 
 module.exports = pergunta;
