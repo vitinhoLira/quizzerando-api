@@ -40,7 +40,9 @@ const quizz = (sequelize, DataTypes) => {
 quizz.associate = (models) => {
     quizz.hasMany(models.Pergunta, {
       foreignKey: 'quizzId', // mesmo nome usado no model Pergunta
-      as: 'perguntas'
+      as: 'perguntas',
+      onDelete: 'CASCADE',
+      hooks: true
     });
   };
 

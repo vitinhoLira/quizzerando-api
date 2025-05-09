@@ -1,6 +1,27 @@
 const express = require('express');
 const router = express.Router();
-const { quizz } = require('../models')
+const { quizz, pergunta } = require('../models')
+
+router.get('/:id/perguntas', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const quizz = await quizz.findByPk(id, {
+      include: [{ model: Pergunta, as: 'perguntas' }]
+    });
+
+    if (!quizz) {
+      return res.status(404).json({ error: 'Quizz não encontrado' });
+    }
+
+    res.json(quizz.perguntas); // Só retorna as perguntas
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erro ao buscar perguntas do quizz' });
+
+    console.log(error);
+  }
+});
 
 router.get('/:id', async (req, res) => {
     const { id } = req.params;

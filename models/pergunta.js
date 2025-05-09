@@ -57,7 +57,8 @@ const pergunta = (sequelize, DataTypes) => {
  pergunta.associate = (models) => {
     pergunta.belongsTo(models.Quizz, {
       foreignKey: 'quizzId',
-      as: 'quizz'
+      as: 'quizz',
+      onDelete: 'CASCADE'
     });
   };
 
