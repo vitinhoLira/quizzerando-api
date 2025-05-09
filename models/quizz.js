@@ -31,19 +31,19 @@ const quizz = (sequelize, DataTypes) => {
 
         },
 
-    }, {tableName: 'quizz'})
+    }, {tableName: 'quizz'});
+
+    Quizz.associate = (models) => {
+        Quizz.hasMany(models.Pergunta, {
+            foreignKey: 'quizzId', // mesmo nome usado no model Pergunta
+            as: 'perguntas',
+            onDelete: 'CASCADE',
+            hooks: true
+        });
+    };
 
     return Quizz
 
-}
-
-quizz.associate = (models) => {
-    quizz.hasMany(models.Pergunta, {
-      foreignKey: 'quizzId', // mesmo nome usado no model Pergunta
-      as: 'perguntas',
-      onDelete: 'CASCADE',
-      hooks: true
-    });
-  };
+};
 
 module.exports = quizz;

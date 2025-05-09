@@ -48,18 +48,18 @@ const pergunta = (sequelize, DataTypes) => {
 
 
 
-    }, {tableName: 'pergunta'})
+    }, {tableName: 'pergunta'});
+
+    Pergunta.associate = (models) => {
+        Pergunta.belongsTo(models.Quizz, {
+            foreignKey: 'quizzId',
+            as: 'quizz',
+            onDelete: 'CASCADE'
+        });
+    };
 
     return Pergunta
 
 }
-
- pergunta.associate = (models) => {
-    pergunta.belongsTo(models.Quizz, {
-      foreignKey: 'quizzId',
-      as: 'quizz',
-      onDelete: 'CASCADE'
-    });
-  };
 
 module.exports = pergunta;

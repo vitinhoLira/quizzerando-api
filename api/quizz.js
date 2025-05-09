@@ -6,15 +6,15 @@ router.get('/:id/perguntas', async (req, res) => {
   const { id } = req.params;
 
   try {
-    const quizz = await quizz.findByPk(id, {
-      include: [{ model: Pergunta, as: 'perguntas' }]
+    const Quizz = await quizz.findByPk(id, {
+      include: [{ model: pergunta, as: 'perguntas' }]
     });
 
-    if (!quizz) {
+    if (!Quizz) {
       return res.status(404).json({ error: 'Quizz não encontrado' });
     }
 
-    res.json(quizz.perguntas); // Só retorna as perguntas
+    res.json(Quizz.perguntas); // Só retorna as perguntas
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Erro ao buscar perguntas do quizz' });
@@ -27,15 +27,16 @@ router.get('/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
-        const quizz = await quizz.findByPk(id);
+        const Quizz = await quizz.findByPk(id);
 
         if (!quizz) {
             return res.status(404).json({ error: 'Quizz não encontrado' });
         }
 
-        res.json(quizz);
+        res.json(Quizz);
     } catch (error) {
         res.status(500).json({ error: 'Erro ao buscar o quizz' });
+        console.log(error);
     }
 });
 
@@ -53,6 +54,7 @@ router.get('/', async (req, res) => {
 
     } catch (error) {
         res.status(500).json({ error: 'Erro ao buscar todos os quizzes' });
+        console.log(error);
     }
 
 });
@@ -71,6 +73,7 @@ router.post('/cad', async (req, res) => {
 
     } catch (error) {
         res.status(500).json({ error: 'Erro ao cadastrar quizz' });
+        console.log(error);
     }
 
 });

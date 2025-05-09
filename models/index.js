@@ -5,16 +5,19 @@ const Quizz = require('./quizz');
 
 const Pergunta = require('./pergunta');
 
-const quizz = Quizz(sequelize, Sequelize.DataTypes);
+const QuizzModel = Quizz(sequelize, Sequelize.DataTypes);
 
-const pergunta = Pergunta(sequelize, Sequelize.DataTypes);
+const PerguntaModel = Pergunta(sequelize, Sequelize.DataTypes);
 
 const db = {
 
-    quizz,
-    pergunta,
+    Quizz: QuizzModel,
+    Pergunta: PerguntaModel,
     sequelize
 
 }
+
+if (QuizzModel.associate) QuizzModel.associate(db);
+if (PerguntaModel.associate) PerguntaModel.associate(db);
 
 module.exports = db;
