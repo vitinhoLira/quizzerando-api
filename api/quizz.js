@@ -1,39 +1,43 @@
 const express = require('express');
 const router = express.Router();
-const { quizz, pergunta } = require('../models')
+const { Quizz, Pergunta } = require('../models');
 
 router.get('/:id/perguntas', async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const Quizz = await quizz.findByPk(id, {
-      include: [{ model: pergunta, as: 'perguntas' }]
-    });
-
-    if (!Quizz) {
-      return res.status(404).json({ error: 'Quizz não encontrado' });
+    const { id } = req.params;
+  
+    try {
+      const quizz = await Quizz.findByPk(id, {
+        include: [{ model: Pergunta, as: 'perguntas' }]
+      });
+  
+      if (!quizz) {
+        return res.status(404).json({ error: 'Quizz não encontrado' });
+      }
+  
+      if (!quizz.perguntas || quizz.perguntas.length === 0) {
+        return res.status(404).json({ error: 'Perguntas não encontradas para este quizz' });
+      }
+  
+      res.json(quizz.perguntas); // Retorna apenas as perguntas relacionadas
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Erro ao buscar perguntas do quizz' });
     }
-
-    res.json(Quizz.perguntas); // Só retorna as perguntas
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Erro ao buscar perguntas do quizz' });
-
-    console.log(error);
-  }
-});
+  });
+  
+  
 
 router.get('/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
-        const Quizz = await quizz.findByPk(id);
+        const quizz = await Quizz.findByPk(id);
 
-        if (!quizz) {
+        if (quizz.length === 0) {
             return res.status(404).json({ error: 'Quizz não encontrado' });
         }
 
-        res.json(Quizz);
+        res.json(quizz);
     } catch (error) {
         res.status(500).json({ error: 'Erro ao buscar o quizz' });
         console.log(error);
@@ -44,9 +48,9 @@ router.get('/', async (req, res) => {
 
     try {
 
-        const quizzes = await quizz.findAll();
+        const quizzes = await Quizz.findAll();
 
-        if (!quizzes) {
+        if (quizzes.length === 0) {
             return res.status(404).json({ error: 'Quizzes não encontrados' });
         }
 
@@ -60,55 +64,59 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/cad', async (req, res) => {
-
-    const {titulo, descricao, categoria, idUsuario, ativo} = req.body;
+    const { titulo, descricao, categoria, idUsuario, ativo } = req.body;
 
     try {
+        const novoQuizz = await Quizz.create({ titulo, descricao, categoria, idUsuario, ativo });
 
-        await quizz.create({titulo, descricao, categoria, idUsuario, ativo});
+        res.status(201).json(novoQuizz); // retorna o objeto criado com status 201 (Created)
 
-        res.json(quizz);
-
-        console.log('Quizz cadastrado!')
-
+        console.log('Quizz cadastrado!');
     } catch (error) {
         res.status(500).json({ error: 'Erro ao cadastrar quizz' });
         console.log(error);
     }
-
-});
+});;
 
 router.put('/edit/:id', async (req, res) => {
     const { id } = req.params;
-    const {titulo, descricao, categoria, idUsuario, ativo} = req.body; // ajuste conforme seus campos
+    const { titulo, descricao, categoria, idUsuario, ativo } = req.body;
 
     try {
-        const [atualizados] = await quizz.update(
-            { titulo, descricao, categoria, idUsuario, ativo }, // campos a atualizar
-            { where: { id } }      // condição de qual registro
+        const [atualizados] = await Quizz.update(
+            { titulo, descricao, categoria, idUsuario, ativo },
+            { where: { id } }
         );
 
-        if (atualizados === 0) {
-            return res.status(404).json({ error: 'Quizz não encontrado ou dados iguais' });
+        if (atualizados.length === 0) {
+            return res.status(404).json({ error: 'Quizz não encontrado ou sem alterações' });
         }
 
-        const quizAtualizado = await quizz.findByPk(id);
-        res.json(quizAtualizado);
+        // Busca o objeto atualizado diretamente do banco
+        const quizzAtualizado = await Quizz.findByPk(id);
+
+        if (quizzAtualizado.length === 0) {
+            return res.status(404).json({ error: 'Quizz não encontrado após atualização' });
+        }
+
+        res.status(200).json(quizzAtualizado);
 
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: 'Erro ao atualizar o quizz' });
     }
 });
+
 
 router.delete('/del/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
-        const deletados = await quizz.destroy({
+        const deletados = await Quizz.destroy({
             where: { id }
         });
 
-        if (deletados === 0) {
+        if (deletados.length === 0) {
             return res.status(404).json({ error: 'Quizz não encontrado' });
         }
 

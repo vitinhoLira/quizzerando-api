@@ -1,14 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const { pergunta } = require('../models')
+const { Pergunta } = require('../models')
 
 router.get('/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
-        const pergunta = await pergunta.findByPk(id);
+        const pergunta = await Pergunta.findByPk(id);
 
-        if (!pergunta) {
+        if (pergunta.length === 0) {
             return res.status(404).json({ error: 'Pergunta não encontrada' });
         }
 
@@ -21,9 +21,9 @@ router.get('/:id', async (req, res) => {
 router.get('/', async (req, res) => {
 
      try {
-        const perguntas = await pergunta.findAll();
+        const perguntas = await Pergunta.findAll();
 
-        if (!perguntas) {
+        if (perguntas.length === 0) {
             return res.status(404).json({ error: 'perguntas não encontradas' });
         }
 
@@ -32,6 +32,7 @@ router.get('/', async (req, res) => {
         console.log('Pergunta encontrada!');
 
     } catch (error) {
+        console.log(error)
         res.status(500).json({ error: 'Erro ao buscar o perguntas' });
     }
 
@@ -42,9 +43,9 @@ router.post('/cad', async (req, res) => {
     const {enunciado, quizzId, alternativa1, alternativa2, alternativa3, alternativa4, respCorreta} = req.body;
 
     try {
-        await pergunta.create({enunciado, quizzId, alternativa1, alternativa2, alternativa3, alternativa4, respCorreta});
+       const novaPergunta = await Pergunta.create({enunciado, quizzId, alternativa1, alternativa2, alternativa3, alternativa4, respCorreta});
 
-        res.json(pergunta);
+        res.status(201).json(novaPergunta);
 
         console.log('Pergunta cadastrada!');
 
@@ -62,17 +63,17 @@ router.put('/edit/:id', async (req, res) => {
     const {enunciado, idQuiz, alternativa1, alternativa2, alternativa3, alternativa4, respCorreta} = req.body; // ajuste conforme seus campos
 
     try {
-        const [atualizados] = await pergunta.update(
+        const [atualizados] = await Pergunta.update(
             { enunciado, idQuiz, alternativa1, alternativa2, alternativa3, alternativa4, respCorreta }, // campos a atualizar
             { where: { id } }      // condição de qual registro
         );
 
-        if (atualizados === 0) {
+        if (atualizados.length === 0) {
             return res.status(404).json({ error: 'Pergunta não encontrado ou dados iguais' });
         }
 
-        const perguntaAtualizada = await pergunta.findByPk(id);
-        res.json(perguntaAtualizada);
+        const perguntaAtualizada = await Pergunta.findByPk(id);
+        res.status(200).json(perguntaAtualizada);
 
         console.log('Pergunta atualizada!');
 
@@ -85,11 +86,11 @@ router.delete('/del/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
-        const deletados = await pergunta.destroy({
+        const deletados = await Pergunta.destroy({
             where: { id }
         });
 
-        if (deletados === 0) {
+        if (deletados.length === 0) {
             return res.status(404).json({ error: 'Pergunta não encontrada' });
         }
 
