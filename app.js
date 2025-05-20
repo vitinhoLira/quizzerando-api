@@ -14,8 +14,8 @@ sequelize.sync().then(()=>{
 
 })
 
-app.listen(3000, () => {
+app.listen(process.env.PORT, () => {
 
-    console.log('App funcionando: 3000')
+    console.log('App funcionando: ' + process.env.PORT)
 
 });

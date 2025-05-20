@@ -1,10 +1,10 @@
 module.exports = {
 
     dialect: 'postgres',
-    host: 'localhost',
-    port: '5432',
-    database: 'quizzerando',
-    username: 'postgres',
-    password: ''
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    database: process.env.DATABASE,
+    username: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD
 
 }
