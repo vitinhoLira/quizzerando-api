@@ -31,7 +31,7 @@ const resultado = (sequelize, DataTypes) => {
     }, {tableName: 'resultado'});
 
     Resultado.associate = (models) => {
-        Pergunta.belongsTo(models.Quizz, {
+        Resultado.belongsTo(models.Quizz, {
             foreignKey: 'quizzId',
             as: 'quizz',
             onDelete: 'CASCADE'
