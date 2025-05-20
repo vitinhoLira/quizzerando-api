@@ -18,18 +18,6 @@ const quizz = (sequelize, DataTypes) => {
             type: DataTypes.STRING
 
         },
-        idUsuario: {
-
-
-            type: DataTypes.STRING
-
-        },
-        ativo: {
-
-
-            type: DataTypes.BOOLEAN
-
-        },
 
     }, {tableName: 'quizz'});
 
@@ -40,6 +28,14 @@ const quizz = (sequelize, DataTypes) => {
             onDelete: 'CASCADE',
             hooks: true
         });
+
+        Quizz.hasOne(models.Resultado, {
+            foreignKey: 'quizzId', // mesmo nome usado no model Resultado
+            as: 'resultado',
+            onDelete: 'CASCADE',
+            hooks: true
+        });
+
     };
 
     return Quizz

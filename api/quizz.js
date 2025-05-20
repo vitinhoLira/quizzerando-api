@@ -1,6 +1,29 @@
 const express = require('express');
 const router = express.Router();
-const { Quizz, Pergunta } = require('../models');
+const { Quizz, Pergunta, Resultado } = require('../models');
+
+router.get('/:id/resultado', async (req, res) => {
+    const { id } = req.params;
+  
+    try {
+      const quizz = await Quizz.findByPk(id, {
+        include: [{ model: Resultado, as: 'resultado' }]
+      });
+  
+      if (!quizz) {
+        return res.status(404).json({ error: 'Resultado não encontrado' });
+      }
+  
+      if (!quizz.resultado || quizz.resultado.length === 0) {
+        return res.status(404).json({ error: 'Resultado não encontrado para este quizz' });
+      }
+  
+      res.json(quizz.resultado); // Retorna apenas o resultado relacionadas
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Erro ao buscar resultado do quizz' });
+    }
+  });
 
 router.get('/:id/perguntas', async (req, res) => {
     const { id } = req.params;
@@ -76,7 +99,7 @@ router.post('/cad', async (req, res) => {
         res.status(500).json({ error: 'Erro ao cadastrar quizz' });
         console.log(error);
     }
-});;
+});
 
 router.put('/edit/:id', async (req, res) => {
     const { id } = req.params;
