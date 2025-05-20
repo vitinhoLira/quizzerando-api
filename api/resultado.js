@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const authenticate = require('../middleware/authMiddleware');
+const authorizeRole = require('../middleware/roleMiddleware');
 const { Resultado } = require('../models')
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', authenticate, async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -18,7 +20,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-router.get('/', async (req, res) => {
+router.get('/', authenticate, async (req, res) => {
 
      try {
         const resultados = await Resultado.findAll();
@@ -38,7 +40,7 @@ router.get('/', async (req, res) => {
 
 });
 
-router.post('/cad', async (req, res) => {
+router.post('/cad', authenticate, async (req, res) => {
 
     const {pontuacao, quizzId, acertos, erros} = req.body;
 
@@ -58,7 +60,7 @@ router.post('/cad', async (req, res) => {
 
 });
 
-router.put('/edit/:id', async (req, res) => {
+router.put('/edit/:id', authenticate, authorizeRole('admin'), async (req, res) => {
     const { id } = req.params;
     const {pontuacao, quizzId, acertos, erros} = req.body; // ajuste conforme seus campos
 
@@ -82,7 +84,7 @@ router.put('/edit/:id', async (req, res) => {
     }
 });
 
-router.delete('/del/:id', async (req, res) => {
+router.delete('/del/:id', authenticate, authorizeRole('admin'), async (req, res) => {
     const { id } = req.params;
 
     try {

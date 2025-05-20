@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const authenticate = require('../middleware/authMiddleware');
+const authorizeRole = require('../middleware/roleMiddleware');
 const { Quizz, Pergunta, Resultado } = require('../models');
 
-router.get('/:id/resultado', async (req, res) => {
+router.get('/:id/resultado', authenticate, async (req, res) => {
     const { id } = req.params;
   
     try {
@@ -25,7 +27,7 @@ router.get('/:id/resultado', async (req, res) => {
     }
   });
 
-router.get('/:id/perguntas', async (req, res) => {
+router.get('/:id/perguntas', authenticate, async (req, res) => {
     const { id } = req.params;
   
     try {
@@ -50,7 +52,7 @@ router.get('/:id/perguntas', async (req, res) => {
   
   
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', authenticate, async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -67,7 +69,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-router.get('/', async (req, res) => {
+router.get('/', authenticate, async (req, res) => {
 
     try {
 
@@ -86,7 +88,7 @@ router.get('/', async (req, res) => {
 
 });
 
-router.post('/cad', async (req, res) => {
+router.post('/cad', authenticate, authorizeRole('admin'), async (req, res) => {
     const { titulo, descricao, categoria, idUsuario, ativo } = req.body;
 
     try {
@@ -101,7 +103,7 @@ router.post('/cad', async (req, res) => {
     }
 });
 
-router.put('/edit/:id', async (req, res) => {
+router.put('/edit/:id', authenticate, authorizeRole('admin'), async (req, res) => {
     const { id } = req.params;
     const { titulo, descricao, categoria, idUsuario, ativo } = req.body;
 
@@ -131,7 +133,7 @@ router.put('/edit/:id', async (req, res) => {
 });
 
 
-router.delete('/del/:id', async (req, res) => {
+router.delete('/del/:id', authenticate, authorizeRole('admin'), async (req, res) => {
     const { id } = req.params;
 
     try {

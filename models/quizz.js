@@ -29,7 +29,7 @@ const quizz = (sequelize, DataTypes) => {
             hooks: true
         });
 
-        Quizz.hasOne(models.Resultado, {
+        Quizz.hasMany(models.Resultado, {
             foreignKey: 'quizzId', // mesmo nome usado no model Resultado
             as: 'resultado',
             onDelete: 'CASCADE',
