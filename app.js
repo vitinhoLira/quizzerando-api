@@ -1,7 +1,7 @@
+require('dotenv').config();
 const express = require('express');
 const routers = require('./api');
 const {sequelize} = require('./models');
-require('dotenv').config();
 
 const app = express();
 

@@ -1,7 +1,7 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const Usuario = require('../models/usuario');
+const { Usuario } = require('../models');
 const { secret, expiresIn } = require('../config/jwt');
 
 const router = express.Router();
@@ -19,6 +19,7 @@ router.post('/login', async (req, res) => {
 
     res.json({ token });
   } catch (err) {
+    console.log(err)
     res.status(500).json({ error: 'Erro ao fazer login' });
   }
 });

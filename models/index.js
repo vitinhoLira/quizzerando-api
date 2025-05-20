@@ -15,7 +15,7 @@ const PerguntaModel = Pergunta(sequelize, Sequelize.DataTypes);
 
 const ResultadoModel = Resultado(sequelize, Sequelize.DataTypes);
 
-const UsuarioModel = Resultado(sequelize, Sequelize.DataTypes);
+const UsuarioModel = Usuario(sequelize, Sequelize.DataTypes);
 
 const db = {
 
@@ -30,5 +30,6 @@ const db = {
 if (QuizzModel.associate) QuizzModel.associate(db);
 if (PerguntaModel.associate) PerguntaModel.associate(db);
 if (ResultadoModel.associate) ResultadoModel.associate(db);
+if (UsuarioModel.associate) UsuarioModel.associate(db);
 
 module.exports = db;

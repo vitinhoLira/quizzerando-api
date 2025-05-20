@@ -1,8 +1,9 @@
 const express = require('express');
-const bcrypt = require('bcryptjs');
-const Usuario = require('../models/usuario');
-
 const router = express.Router();
+const bcrypt = require('bcryptjs');
+const { Usuario } = require('../models');
+
+
 
 router.post('/register', async (req, res) => {
   const { nome, email, senha, role } = req.body;
@@ -18,6 +19,9 @@ router.post('/register', async (req, res) => {
 
     res.status(201).json({ id: usuario.id, nome: usuario.nome, email: usuario.email });
   } catch (err) {
+
+    console.log(err)
+
     res.status(500).json({ error: 'Erro ao criar usuário' });
   }
 });
