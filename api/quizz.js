@@ -4,7 +4,7 @@ const authenticate = require('../middleware/authMiddleware');
 const authorizeRole = require('../middleware/roleMiddleware');
 const { Quizz, Pergunta, Resultado } = require('../models');
 
-router.get('/:id/resultado', authenticate, async (req, res) => {
+router.get('/:id/resultados', authenticate, async (req, res) => {
     const { id } = req.params;
   
     try {

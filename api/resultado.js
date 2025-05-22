@@ -42,10 +42,10 @@ router.get('/', authenticate, async (req, res) => {
 
 router.post('/cad', authenticate, async (req, res) => {
 
-    const {pontuacao, quizzId, acertos, erros} = req.body;
+    const {pontuacao, quizzId, userId, acertos, erros} = req.body;
 
     try {
-       const novoResultado = await Resultado.create({pontuacao, quizzId, acertos, erros});
+       const novoResultado = await Resultado.create({pontuacao, quizzId, userId, acertos, erros});
 
         res.status(201).json(novoResultado);
 

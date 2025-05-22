@@ -17,8 +17,9 @@ router.post('/login', async (req, res) => {
 
     const token = jwt.sign({ id: usuario.id, role: usuario.role }, secret, { expiresIn });
     const role = usuario.role;
+    const id = usuario.id;
 
-    res.json({ token, role });
+    res.json({ token, role, id });
   } catch (err) {
     console.log(err)
     res.status(500).json({ error: 'Erro ao fazer login' });

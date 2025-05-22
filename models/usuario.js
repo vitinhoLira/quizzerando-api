@@ -24,6 +24,16 @@ const usuario = (sequelize, DataTypes) => {
 
   }, { tableName: 'usuario' });
 
+  Usuario.associate = (models) => {
+    Usuario.hasMany(models.Resultado, {
+      foreignKey: 'userId', // mesmo nome usado no model Pergunta
+      as: 'resultado',
+      onDelete: 'CASCADE',
+      hooks: true
+    });
+
+  }
+
   return Usuario
 
 };
