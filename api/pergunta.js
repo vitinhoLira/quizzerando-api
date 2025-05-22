@@ -40,7 +40,7 @@ router.get('/', authenticate, async (req, res) => {
 
 });
 
-router.post('/cad', async (req, res) => {
+router.post('/cad', authenticate, authorizeRole('admin'), async (req, res) => {
 
     const {enunciado, quizzId, alternativa1, alternativa2, alternativa3, alternativa4, respCorreta} = req.body;
 

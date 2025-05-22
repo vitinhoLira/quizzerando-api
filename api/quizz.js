@@ -89,6 +89,7 @@ router.get('/', authenticate, async (req, res) => {
 });
 
 router.post('/cad', authenticate, authorizeRole('admin'), async (req, res) => {
+  
     const { titulo, descricao, categoria, idUsuario, ativo } = req.body;
 
     try {
