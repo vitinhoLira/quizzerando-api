@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
-const serverless = require('serverless-http');
-const routers = require('./routes');
+// const serverless = require('serverless-http');
+const routers = require('./api');
 const {sequelize} = require('./models');
 
 const app = express();
@@ -16,12 +16,12 @@ sequelize.sync().then(()=>{
 
 })
 
-// const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 
-// app.listen(port, () => {
+app.listen(port, () => {
 
-//     console.log('App funcionando: ' + port)
+    console.log('App funcionando: ' + port)
 
-// });
+});
 
-module.exports = serverless(app);
+// module.exports = serverless(app);
