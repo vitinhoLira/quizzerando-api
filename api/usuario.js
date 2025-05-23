@@ -4,6 +4,52 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const { Usuario, Resultado } = require('../models');
 
+router.put('/edit/:id', authenticate, async (req, res) => {
+    const { id } = req.params;
+    const { nome, email, senha, role } = req.body;
+
+    try {
+        const [atualizados] = await Usuario.update(
+            { nome, email, senha, role },
+            { where: { id } }
+        );
+
+        if (atualizados.length === 0) {
+            return res.status(404).json({ error: 'Usuário não encontrado ou sem alterações' });
+        }
+
+        // Busca o objeto atualizado diretamente do banco
+        const usuarioAtualizado = await Usuario.findByPk(id);
+
+        if (usuarioAtualizado.length === 0) {
+            return res.status(404).json({ error: 'Usuário não encontrado após atualização' });
+        }
+
+        res.status(200).json(usuarioAtualizado);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Erro ao atualizar o usuário' });
+    }
+});
+
+router.get('/:id', authenticate, async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const usuario = await Usuario.findByPk(id);
+
+        if (usuario.length === 0) {
+            return res.status(404).json({ error: 'Usuário não encontrado' });
+        }
+
+        res.json(usuario);
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao buscar o usuário' });
+        console.log(error);
+    }
+});
+
 router.get('/:id/resultados', authenticate, async (req, res) => {
     const { id } = req.params;
   
