@@ -6,9 +6,15 @@ const { Usuario, Resultado } = require('../models');
 
 router.put('/edit/:id', authenticate, async (req, res) => {
     const { id } = req.params;
-    const { nome, email, senha, role } = req.body;
+    const { nome, email, role } = req.body;
+    let { senha } = req.body;
+
+    const senhaCriptografada = await bcrypt.hash(senha, 10);
+
+    senha = senhaCriptografada;
 
     try {
+
         const [atualizados] = await Usuario.update(
             { nome, email, senha, role },
             { where: { id } }
