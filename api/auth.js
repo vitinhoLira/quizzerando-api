@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
@@ -31,14 +32,14 @@ router.post('/recovery', async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: 'gmail', // ou SMTP personalizado
       auth: {
-        user: 'jvl1@discente.ifpe.edu.br',
-        pass: 'kjvk zdap rhic hfuy',
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWD,
       },
     });
 
     // Envia o email com a nova senha
     await transporter.sendMail({
-      from: 'jvl1@discente.ifpe.edu.br>',
+      from: 'Quizzerando',
       to: usuario.email,
       subject: 'Nova senha de acesso',
       html: `<p>Olá,</p>
