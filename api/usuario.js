@@ -6,36 +6,32 @@ const { Usuario, Resultado } = require('../models');
 
 router.put('/edit/:id', authenticate, async (req, res) => {
     const { id } = req.params;
-    const { nome, email, role } = req.body;
-    let { senha } = req.body;
+    const { nome, email, role, senha } = req.body;
 
-    const senhaCriptografada = await bcrypt.hash(senha, 10);
+    const dadosParaAtualizar = {};
 
-    senha = senhaCriptografada;
+    if (nome) dadosParaAtualizar.nome = nome;
+    if (email) dadosParaAtualizar.email = email;
+    if (role) dadosParaAtualizar.role = role;
+    if (senha) {
+        const senhaCriptografada = await bcrypt.hash(senha, 10);
+        dadosParaAtualizar.senha = senhaCriptografada;
+    }
 
     try {
-
         const [atualizados] = await Usuario.update(
-            { nome, email, senha, role },
+            dadosParaAtualizar,
             { where: { id } }
         );
 
-        if (atualizados.length === 0) {
-            return res.status(404).json({ error: 'Usuário não encontrado ou sem alterações' });
+        if (atualizados === 0) {
+            return res.status(404).json({ error: 'Usuário não encontrado ou dados iguais' });
         }
 
-        // Busca o objeto atualizado diretamente do banco
-        const usuarioAtualizado = await Usuario.findByPk(id);
-
-        if (usuarioAtualizado.length === 0) {
-            return res.status(404).json({ error: 'Usuário não encontrado após atualização' });
-        }
-
-        res.status(200).json(usuarioAtualizado);
-
+        res.status(200).json({ message: 'Usuário atualizado com sucesso' });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Erro ao atualizar o usuário' });
+        console.error('Erro ao atualizar usuário:', error);
+        res.status(500).json({ error: 'Erro ao atualizar usuário' });
     }
 });
 
